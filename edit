@@ -1,0 +1,15 @@
+#!/bin/bash
+_term="xfce4-terminal"
+#_term="tilix"
+_opt=""
+
+if [ ${#zoom} -ne 0 ] ; then _opt="--zoom=${zoom}" ; fi
+
+if [ "${_term}" == "tilix" ]
+then
+    _opt="${_opt} --window-style=disable-csd-hide-toolbar"
+    _opt="${_opt} --working-directory=`pwd`"
+    _opt="${_opt} --new-process"
+fi
+
+${_term} ${_opt} --geometry=120x80 --command "vim ${*}" &>/dev/null &

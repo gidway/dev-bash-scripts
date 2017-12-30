@@ -1,0 +1,3 @@
+#!/bin/bash
+PAGER='gvim -' git -c color.ui=false show $*
+

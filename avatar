@@ -1,0 +1,2 @@
+#!/bin/bash
+convert ~/bin/images/avatar.jpg jpeg:- | jp2a -

@@ -1,0 +1,3 @@
+#!/bin/bash
+echo 'git push gerrit HEAD:refs/for/master'
+git push gerrit HEAD:refs/for/master
