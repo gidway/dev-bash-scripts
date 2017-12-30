@@ -1,2 +1,2 @@
 #!/bin/bash
-EDITOR=edit ranger ${*}
+EDITOR=x-edit ranger ${*}
