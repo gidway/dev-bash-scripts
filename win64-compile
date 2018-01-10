@@ -1,0 +1,33 @@
+#!/bin/bash
+# cross compile on Windows by Linu
+
+x86_64-w64-mingw32-g++ \
+    -O2 \
+    -g \
+    -pipe \
+    -Wall \
+    -Wp,-D_FORTIFY_SOURCE=2 \
+    -fexceptions \
+    --param=ssp-buffer-size=4 \
+    -Wno-format \
+    --static \
+    -static-libgcc \
+    -static-libstdc++ \
+    -Wall \
+    -MD -D_FORTIFY_SOURCE=2 \
+    -Wpointer-arith \
+    -Wshadow \
+    -Wwrite-strings \
+    -Wcast-align \
+    -Wredundant-decls \
+    -Wdisabled-optimization \
+    -Wfloat-equal \
+    -Wmultichar \
+    -Wmissing-noreturn \
+    -Wstrict-null-sentinel \
+    -Woverloaded-virtual \
+    -Wsign-promo \
+    -funit-at-a-time \
+    -mthreads \
+    -shared-libgcc \
+    ${*}

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+PATH="$PATH:."
+
+if [ ${#APPNAME} -eq 0 ] ; then
+  APPNAME=tested-app
+fi
+
+function _runapp {
+  exef="${2}"
+  runner="${1}"
+  if [ -x ${APPNAME}${exef} ]
+  then
+    ${runner} ${APPNAME}${exef}
+    echo
+  fi
+}
+
+echo "----- MULTIPLE COMPILE TEST ----- :: begin"
+
+echo "----- :: on Linux / clang++ "
+clang++ ${*} -o ${APPNAME} && _runapp
+
+if [ $? -eq 0 ] ; then
+    echo "----- :: on Linux / g++ "
+    g++ ${*} -o ${APPNAME} \
+        && _runapp
+fi
+
+if [ $? -eq 0 ] ; then
+    echo "----- :: on Windows / mingw (64) "
+    win64-compile ${*} -o ${APPNAME}.exe \
+        && _runapp wine .exe
+fi
+
+# eof
