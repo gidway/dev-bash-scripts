@@ -1,0 +1,2 @@
+#!/bin/bash
+tilix --window-style=disable-csd-hide-toolbar --new-process $*
