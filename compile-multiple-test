@@ -25,12 +25,12 @@ if [ $? -eq 0 ] ; then
     echo "----- :: on Linux / g++ "
     g++ ${*} -o ${APPNAME} \
         && _runapp
-fi
 
-if [ $? -eq 0 ] ; then
-    echo "----- :: on Windows / mingw (64) "
-    win64-compile ${*} -o ${APPNAME}.exe \
-        && _runapp wine .exe
-fi
+    if [ $? -eq 0 ] ; then
+        echo "----- :: on Windows / mingw (64) "
+        win64-compile ${*} -o ${APPNAME}.exe \
+            && _runapp wine .exe
+    fi
 
+fi
 # eof
