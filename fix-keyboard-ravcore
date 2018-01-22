@@ -1,0 +1,10 @@
+#!/bin/bash
+_driver="$1"
+if [ ${#_driver} -eq 0 ] ; then _driver='8' ; fi
+echo
+echo 'Please remeber about fixing /etc/modprobe.d/usbhid.conf file by adding line'
+echo 'options usbhid quirks==0x15c2:0x0043:0x000'
+echo
+rmmod usbhid && sudo modprobe usbhid quirks=0x15c2:0x0043:0x000${_driver}
+
+if [ "${USER}" != 'root' ] ; then echo ; echo "--- Please run it with root mods" ; echo ; fi
