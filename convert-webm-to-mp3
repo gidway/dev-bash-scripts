@@ -1,0 +1,11 @@
+#!/bin/bash
+ftype=".webm"
+for f in *${ftype}
+do
+	name=`echo "$f" | sed -e "s/"${ftype}"$//g"`
+	ffmpeg -i "$f" -vn -ar 44100 -ac 2 -ab 192k -f mp3 "/tmp/$name.mp3" \
+		&& mv "/tmp/$name.mp3" ./ \
+		&& ( rm "${f}" -f &>/dev/null ) \
+		|| ( echo -e "\n\n---Oopsss\n\n" && exit -1 )
+
+done
