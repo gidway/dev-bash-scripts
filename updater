@@ -3,9 +3,8 @@
 _pwd=`pwd`
 cd ~/.vim/
 git submodule init \
-	&& git submodule update --remote --merge \
 	&& git submodule sync --recursive \
-	&& git submodule update --recursive \
+	&& git submodule update --remote --merge --recursive \
 	&& git status \
 	&& echo "All done fine!" \
 	&& avatar \
