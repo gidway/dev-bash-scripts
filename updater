@@ -6,7 +6,10 @@ git submodule init \
 	&& git submodule sync --recursive \
 	&& git submodule update --remote --merge --recursive \
 	&& git status \
-	&& echo "All done fine!" \
-	&& avatar \
 	|| echo -e "\n\n\n\n----- Cos sie jeblo...\n\n\n"
-cd $_pwd
+
+git add . \
+    && git commit -m '@update '"`date +%s`, `date`" \
+	&& echo "All committed!" \
+	&& avatar \
+    || echo "Nothing was committed..."
