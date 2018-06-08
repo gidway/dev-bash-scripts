@@ -1,0 +1,2 @@
+#!/bin/bash
+for devlink in /dev/disk/by-id/usb*; do readlink -f ${devlink}; done
