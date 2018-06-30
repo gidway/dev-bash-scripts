@@ -1,2 +1,10 @@
 #!/bin/bash
-convert ~/bin/images/avatar.jpg jpeg:- | jp2a -
+function _show {
+    convert ~/bin/images/avatar.jpg jpeg:- | jp2a -
+}
+if [ $# -eq 0 ]
+then
+    echo -e "\033[1;36m`_show`\033[0m"
+else
+    _show
+fi
