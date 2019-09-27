@@ -1,0 +1,83 @@
+#!/bin/bash
+
+name="$1"
+branch="$2"
+_commits_list=""
+
+function warning_msg {
+    echo -e "--- WARNING \t \033[1;32m$*\033[0m"
+}
+
+readonly _taxes_path="/tmp/taxes"
+readonly _work_path=`pwd`
+
+if [ ${#name} -eq 0 ] ; then export name='Mularski' ; fi
+if [ ${#branch} -eq 0 ] ; then export branch='origin/master' ; fi
+
+set trap 'cd $_work_path && git checkout master' ERR
+set -eu
+
+git checkout master
+git fetch
+git rebase origin/master
+
+[ -d $_taxes_path ] && rm -fr $_taxes_path
+mkdir -p $_taxes_path
+
+function commit_proceed {
+    local readonly _commit="$1"
+    mkdir -p "$_taxes_path/$_commit"
+    # ####################
+    git checkout $_commit
+    while read _commited_file
+    do
+        local _target_path="$_taxes_path/$_commit/$(dirname $_commited_file)"
+        mkdir -p "$_target_path"
+        cp -vfr "$_commited_file" "$_target_path/" || warning_msg "file avoided, perhaps was removed by commit"
+    done < <(\
+        git diff --name-only HEAD^\
+        )
+    # ####################
+    local _has_files=`find "$_taxes_path/$_commit/" -type f`
+    if [ ${#_has_files} -eq 0 ] ; then
+        warning_msg "Files for commit $_commit was not grabbed, so TAXES folder will be removed"
+        rm -fr "$_taxes_path/$_commit"
+    else
+        export _commits_list="$_commits_list $_commit"
+        git show $_commit > $_taxes_path/$_commit/diff.log
+        git show --name-only $_commit > $_taxes_path/$_commit/files-list.log
+        echo "$branch" > $_taxes_path/$_commit/branch-name.txt
+    fi
+}
+
+# get list of commits
+while read _commit_line
+do
+    commit_proceed $_commit_line
+done < <(\
+    git log\
+    --oneline\
+    --date=iso\
+    --since=$(date --date="1 month ago" +%Y-%m-25)\
+    --before=$(date +%Y-%m-24)\
+    --author="$name"\
+    $branch\
+    )
+
+git log\
+    --oneline\
+    --date=iso\
+    --since=$(date --date="1 month ago" +%Y-%m-25)\
+    --before=$(date +%Y-%m-24)\
+    --author="$name" $branch\
+    > $_taxes_path/work-commits.txt
+
+cd $_taxes_path/
+zip -r -9 -v \
+    ${name}_$(date +%s)_$(date +%Y-%m-%d).zip\
+    ./work-commits.txt\
+    $_commits_list
+cd $_work_path
+
+git checkout master
+
