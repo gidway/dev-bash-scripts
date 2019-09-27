@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -uoe
+trap ' echo -e "\033[1;31mERROR - SOME FUCKUP\033[0m" ; exit 1' ERR
+
+_not_updated=""
+cd ~/.vim/bundle/
+for f in `ls`
+do
+    if [ ! -d $f ]
+    then
+        continue
+    fi
+    cd $f
+    echo -e "\033[0;32mrepo --- \033[1;32m$f\033[0m"
+    # ------------------------------------
+    git fetch                          &&
+    git checkout master                &&
+    git rebase                         &&
+    git submodule init                 &&
+    git submodule sync --recursive     &&
+    git submodule update --recursive   &&
+    echo -e "\033[1;33mDONE!"             ||
+    ( echo -e "\033[1;31mERROR!" ; export _not_updated="${_not_updated} $f" )
+    # ------------------------------------
+    cd ..
+done
+avatar
+echo -e "\033[0m"
+echo -e "NOT UPDATED: $_not_updated"
+
