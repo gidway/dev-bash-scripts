@@ -1,0 +1,19 @@
+#!/bin/bash
+
+for e in `find . -type f | grep 'ctags$|tags$'`
+do
+    rm $e -f
+done
+
+function extract_ctags() {
+    INCLUDE_DIRS=''
+    for e in `find . -name 'include' -type d`
+    do
+        INCLUDE_DIRS="$INCLUDE_DIRS -I $e"
+    done
+    gcc -M $INCLUDE_DIRS "$@" | sed -e 's/[\\ ]/\n/g' | \
+        sed -e '/^$/d' -e '/\.o:[ \t]*$/d' | \
+        ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q
+}
+
+extract_ctags `find . | egrep '*\.cc$|*\.hh$|*.hpp$|*.cpp$'|grep -v build`
